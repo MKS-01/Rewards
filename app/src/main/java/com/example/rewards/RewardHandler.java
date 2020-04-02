@@ -1,73 +1,103 @@
 package com.example.rewards;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RewardHandler {
 
-    private  String TAG  = "Testing";
+public final class RewardHandler {
+    public static final String DateAndTime = "currentDate";
+    public static final String Counts = "counts";
 
+//    private static DataRepository dataRepository;
+    private static String prevDateTime;
+    private static int countNoOfDays;
+    private static Context context;
+    private static int firstDayCoin = 10;
 
-    public void DayChecker() {
+    private static String TAG = "CHECK";
 
+    public static void streakReward() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String currentDateAndTime = format.format(new Date());
+//        dataRepository = PaperDataRepo.getInstance(context);
+
+        try {
+
+            prevDateTime = format.format(new Date());  //check for first boot up time, stored locally
+
+            if (prevDateTime != null) {
+
+//                countNoOfDays = Integer.parseInt(dataRepository.getAppDaysCount());
+                String currentDateAndTime = format.format(new Date());
+                long dayDifference = dateDifference(prevDateTime, currentDateAndTime);
+
+                if (dayDifference == 1) {
+                    countNoOfDays++;
+                    int coin = 10 * countNoOfDays;
+
+                    Log.d(TAG, "Streak Reward for " + countNoOfDays + " day: " + coin + "coins");
+//
+//                    dataRepository.saveCurrentDateTime(currentDateAndTime, Integer.toString(countNoOfDays));
+
+                } else if (dayDifference >= 1) {
 
 
-        Log.d(TAG,"Current time:\t"+currentDateAndTime);
+                    Log.d(TAG, "Streak Reward for 1st day: " + 10 + "coins");
 
-        ///need to repalce with sys date...
-        //save in shared prefecnce
+//                    dataRepository.saveCurrentDateTime(currentDateAndTime, Integer.toString(1));
 
+                } else {
+//                    dataRepository.saveCurrentDateTime(currentDateAndTime, Integer.toString(countNoOfDays));
+                }
 
-        String dateStart = "2020-01-27 15:01:55";
-        String dateStop = "2020-01-30 5:23:05";
+            } else {
+                String currentDateAndTime = format.format(new Date());
+//                String currentDateAndTime = "2020-01-25 12:32:22"; //testing
+//                dataRepository.saveCurrentDateTime(currentDateAndTime, Integer.toString(1));
+                Log.d(TAG, "Streak Reward for 1st day: " + 10 + "coins");
 
-        long check = FindDifference(dateStart,dateStop);
+            }
 
-        Log.d(TAG,"Day:\t"+check);
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
 
+    private static long dateDifference(String previousDate, String currentDate) {
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-   private static long FindDifference(String previousDate, String currentDate){
+        Date d1 = null;
+        Date d2 = null;
 
-       //HH converts hour in 24 hours format (0-23), day calculation
-       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            d1 = format.parse(previousDate);
+            d2 = format.parse(currentDate);
 
-       Date d1 = null;
-       Date d2 = null;
-
-       try {
-           d1 = format.parse(previousDate);
-           d2 = format.parse(currentDate);
-
-
-
-           long diff = d2.getTime() - d1.getTime();
+            long diff = d2.getTime() - d1.getTime();
 
 //           long diffSeconds = diff / 1000 % 60;
 //           long diffMinutes = diff / (60 * 1000) % 60;
 //           long diffHours = diff / (60 * 60 * 1000) % 24;
-           long diffDays = diff / (24 * 60 * 60 * 1000);
+            long diffDays = diff / (24 * 60 * 60 * 1000);
 
-           return diffDays;
-       } catch (Exception e) {
-           e.printStackTrace();
-       }
+            return diffDays;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-       return 0;
-   }
-
+        return 0;
+    }
 
 
 
 }
+
 
 

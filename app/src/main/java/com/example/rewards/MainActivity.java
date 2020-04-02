@@ -2,6 +2,7 @@ package com.example.rewards;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
@@ -11,8 +12,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         RewardHandler rewards = new RewardHandler();
-        rewards.DayChecker();
+        rewards.streakReward();
     }
 
 
